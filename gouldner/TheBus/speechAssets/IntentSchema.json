@@ -1,0 +1,31 @@
+{
+  "intents": [
+    {
+      "intent": "OneshotBusIntent",
+      "slots": [
+        {
+          "name": "Stop",
+          "type": "AMAZON.NUMBER"
+        }
+      ]
+    },
+    {
+      "intent": "DialogBusIntent",
+      "slots": [
+        {
+          "name": "Stop",
+          "type": "AMAZON.NUMBER"
+        }
+      ]
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
+    }
+  ]
+}

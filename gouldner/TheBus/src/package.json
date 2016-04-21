@@ -1,0 +1,15 @@
+{
+  "name": "thebus",
+  "version": "1.0.0",
+  "description": "Alexa Skill for The Bus Arrival times in Hawaii",
+  "main": "index.js",
+  "dependencies": {
+    "xml2js": "^0.4.16"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ronald Gouldner",
+  "license": "ISC"
+}
