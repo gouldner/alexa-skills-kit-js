@@ -9,34 +9,29 @@
 */
 
 /**
- * This sample shows how to create a Lambda function for handling Alexa Skill requests that:
- * - Web service: communicate with an external web service to get tide data from NOAA CO-OPS API (http://tidesandcurrents.noaa.gov/api/)
- * - Multiple optional slots: has 2 slots (city and date), where the user can provide 0, 1, or 2 values, and assumes defaults for the unprovided values
- * - DATE slot: demonstrates date handling and formatted date responses appropriate for speech
- * - Custom slot type: demonstrates using custom slot types to handle a finite set of known values
+ * This skill uses the Honolulu Bus "TheBus" api (http://api.thebus.org/) to get arrival times for a provided bus stop number
+ * - Stop slot: The number of the bus stop you wish to get bus stop information for.
  * - Dialog and Session state: Handles two models, both a one-shot ask and tell model, and a multi-turn dialog model.
  *   If the user provides an incorrect slot in a one-shot model, it will direct to the dialog model. See the
  *   examples section for sample interactions of these models.
- * - Pre-recorded audio: Uses the SSML 'audio' tag to include an ocean wave sound in the welcome response.
+ *
  *
  * Examples:
  * One-shot model:
- *  User:  "Alexa, ask Tide Pooler when is the high tide in Seattle on Saturday"
- *  Alexa: "Saturday June 20th in Seattle the first high tide will be around 7:18 am,
- *          and will peak at ...""
+ *  User:  "Alexa, ask The Bus arrivals for stop 214"
+ *  Alexa: "Here are the arrivals for bus stop 214...."
  * Dialog model:
  *  User:  "Alexa, open The Bus"
  *  Alexa: "Welcome to The Bus. Which stop would you like bus information for?"
  *  User:  "214"
- *  Alexa: "For which route?"
- *  User:  "1"
- *  Alexa: "The next bus arriving at stop 214 on route 1 will be at 9:35am"
+ *  Alexa: "Here are the arrivals for bus stop 214...."
  */
 
 /**
  * App ID for the skill
  */
-var APP_ID = undefined;//replace with 'amzn1.echo-sdk-ams.app.[your-unique-value-here]';
+//var APP_ID = undefined;//replace with 'amzn1.echo-sdk-ams.app.[your-unique-value-here]';
+var APP_ID = undefined;//replace with 'amzn1.echo-sdk-ams.app.d9ad7478-d8b3-4d06-bbe5-06e72c3037b3';
 
 var http = require('http'),
     alexaDateUtil = require('./alexaDateUtil'),
@@ -266,6 +261,8 @@ var processXml = function(data) {
     }
     console.log(result.stopTimes.stop + " - " + result.stopTimes.timestamp );
     speechOutput = speechOutput + " bus stop " + result.stopTimes.stop + ".\n";
+    var foundCanceled=0;
+    var foundArrival=0;
     result.stopTimes.arrival.forEach(function(arrival,i) {
       if (routes[arrival.route]) {
         if (routes[arrival.route].length <= 4) {
@@ -280,9 +277,35 @@ var processXml = function(data) {
                   + arrival.stopTime + "("
                   + arrival.estimated + ")"
                   );
-      speechOutput = speechOutput + " Route " + arrival.route + " heading to "
-                     + arrival.headsign + " arriving at " + arrival.stopTime + " estimate time "
-                     + arrival.estimated + ".\n"
+      var improvedHeadsign = arrival.headsign.toString();
+      improvedHeadsign = improvedHeadsign.replace("UH","University of Hawaii");
+      // canceled 0=not canceled 1=canceled -1=was canceled not anymore
+      if (arrival.canceled <= 0) {
+          foundArrival=1;
+          speechOutput = speechOutput + " Route " + arrival.route + " heading to "
+                         + improvedHeadsign + " arriving at " + arrival.stopTime;
+          // estimated 0=scheduled time no GPS, 1=estimated time based on GPS
+        
+          if (arrival.estimated) {
+             speechOutput = speechOutput + " estimated by GPS"; 
+          } else {
+             speechOutput = speechOutput + " scheduled time no GPS"; 
+          }
+          if (arrival.canceled == -1) {
+             speechOutput = speechOutput + " was canceled not canceled anymore";
+          }
+      } else {
+          foundCanceled=1;
+      }
+      if (!foundArrival) {
+          if (foundCanceled) {
+             speechOutput = speechOutput + " Sorry, only canceled arrivals were found.";
+          } else {
+             speechOutput = speechOutput + " Sorry, no arrivals were returned.";
+          }
+      }
+      // Add newline so card is more readable
+      speechOutput = speechOutput + ".\n"
     });
   });
   return speechOutput;
