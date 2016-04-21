@@ -100,15 +100,7 @@ TheBus.prototype.intentHandlers = {
         // Determine if this turn is for Stop or an error.
         // We could be passed slots with values, no slots, slots with no value.
         var stopSlot = intent.slots.Stop;
-        if (stopSlot && stopSlot.value) {
-            handleStopDialogRequest(intent, session, response);
-        } else {
-            handleNoSlotDialogRequest(intent, session, response);
-        }
-    },
-
-    "SupportedStopsIntent": function (intent, session, response) {
-        handleSupportedStopsRequest(intent, session, response);
+        handleStopDialogRequest(intent, session, response);
     },
 
     "AMAZON.HelpIntent": function (intent, session, response) {
@@ -181,7 +173,8 @@ function handleStopDialogRequest(intent, session, response) {
     // Determine stop, using default if none provided
     var stop = intent.slots.Stop;
     if (!stop || stop.value == null) {
-        response.tell("Problem with StopSlot");
+        response.ask('sorry, I did not hear the stop, please say that again', 'please say the stop again');
+        return;
     }
     var stopValue = parseInt(stop.value);
     if (isNaN(stopValue)) {
@@ -267,6 +260,10 @@ var processXml = function(data) {
   var speechOutput = "Here are the arrivals for ";
 
   parser.parseString(data, function (err, result) {
+    if (typeof(result.stopTimes.arrival) == 'undefined') {
+        speechOutput = "Sorry, no arrivals found for stop" + result.stopTimes.stop + ".  Are you sure this is a valid stop?";
+        return speechOutput;
+    }
     console.log(result.stopTimes.stop + " - " + result.stopTimes.timestamp );
     speechOutput = speechOutput + " bus stop " + result.stopTimes.stop + ".\n";
     result.stopTimes.arrival.forEach(function(arrival,i) {
