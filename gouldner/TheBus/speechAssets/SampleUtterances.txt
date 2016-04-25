@@ -1,11 +1,11 @@
 DialogBusIntent {Stop}
 
-OneshotBusIntent when does next bus arrive at {Stop} 
-OneshotBusIntent when does next bus arrive at stop {Stop} 
-OneshotBusIntent get next bus at {Stop} 
-OneshotBusIntent get next bus at stop {Stop} 
-OneshotBusIntent when is next bus at {Stop}
-OneshotBusIntent when is next bus at stop {Stop}
+OneshotBusIntent when does the next bus arrive at {Stop}
+OneshotBusIntent when does the next bus arrive at stop {Stop}
+OneshotBusIntent get the next bus at {Stop}
+OneshotBusIntent get the next bus at stop {Stop}
+OneshotBusIntent when is the next bus at {Stop}
+OneshotBusIntent when is the next bus at stop {Stop}
 OneshotBusIntent arrival time for {Stop}
 OneshotBusIntent arrival time for stop {Stop}
 OneshotBusIntent arrivals for {Stop}

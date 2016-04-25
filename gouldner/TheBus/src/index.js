@@ -222,7 +222,7 @@ function makeTheBusCall(stopValue, callback) {
 var processXml = function(data) {
   var parser = new xml.Parser();
 
-  var speechOutput = "Here are the arrivals for ";
+  var speechOutput = "Here are the arrivals for";
 
   parser.parseString(data, function (err, result) {
     if (typeof(result.stopTimes.arrival) == 'undefined') {
