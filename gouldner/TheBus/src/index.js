@@ -18,11 +18,11 @@
  *
  * Examples:
  * One-shot model:
- *  User:  "Alexa, ask The Bus arrivals for stop 214"
+ *  User:  "Alexa, ask The Bus Honolulu arrivals for stop 214"
  *  Alexa: "Here are the arrivals for bus stop 214...."
  * Dialog model:
- *  User:  "Alexa, open The Bus"
- *  Alexa: "Welcome to The Bus. Which stop would you like bus information for?"
+ *  User:  "Alexa, open The Bus Honolulu"
+ *  Alexa: "Welcome to The Bus Honolulu. Which stop would you like bus information for?"
  *  User:  "214"
  *  Alexa: "Here are the arrivals for bus stop 214...."
  */
@@ -51,7 +51,7 @@ var key = configuration.key;
 var AlexaSkill = require('./AlexaSkill');
 
 /**
- * The Bus is a child of AlexaSkill.
+ * TheBus is a child of AlexaSkill.
  * To read more about inheritance in JavaScript, see the link below.
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Introduction_to_Object-Oriented_JavaScript#Inheritance
@@ -117,8 +117,7 @@ TheBus.prototype.intentHandlers = {
 function handleWelcomeRequest(response) {
     var whichStopPrompt = "For which Bus Stop would you like to request bus information ?",
         speechOutput = {
-            speech: "<speak>Welcome to Hawaii's The Bus Arrival Service. "
-                //+ "<audio src='https://s3.amazonaws.com/ask-storage/theBus/OceanWaves.mp3'/>"
+            speech: "<speak>Welcome to The Bus Honolulu Arrival Service. "
                 + whichStopPrompt
                 + "</speak>",
             type: AlexaSkill.speechOutputType.SSML
@@ -126,9 +125,8 @@ function handleWelcomeRequest(response) {
         repromptOutput = {
             speech: "I can lead you through providing a stop "
                 + "to get bus information, "
-                + "or you can simply open The Bus and ask a question like, "
+                + "or you can simply open The Bus Honolulu and ask a question like, "
                 + "when will bus arrive at stop 255. "
-                + "For a list of supported stops, ask what stops are supported. "
                 + whichStopPrompt,
             type: AlexaSkill.speechOutputType.PLAIN_TEXT
         };
@@ -140,22 +138,9 @@ function handleHelpRequest(response) {
     var repromptText = "Which stop would you like bus information for?";
     var speechOutput = "I can lead you through providing a stop "
         + "to get bus information, "
-        + "or you can simply open The Bus and ask a question like, "
+        + "or you can simply open The Bus Honolulu and ask a question like, "
         + "when will bus arrive at stop 255. "
-        + "For a list of supported stops, ask what stops are supported. "
         + "Or you can say exit. "
-        + repromptText;
-
-    response.ask(speechOutput, repromptText);
-}
-
-/**
- * Handles the case where the user asked or for, or is otherwise being with supported cities
- */
-function handleSupportedStopsRequest(intent, session, response) {
-    // get Stops re-prompt
-    var repromptText = "Which stop would you like bus information for?";
-    var speechOutput = "Currently, I know bus information for these stops : " + getAllStopsText()
         + repromptText;
 
     response.ask(speechOutput, repromptText);
@@ -180,21 +165,6 @@ function handleStopDialogRequest(intent, session, response) {
     // all slots filled, either from the user or by default values. Move to final request
     getFinalBusResponse(stopValue, response);
 }
-
-
-/**
- * Handle no slots, or slot(s) with no values.
- * In the case of a dialog based skill with multiple slots,
- * when passed a slot with no value, we cannot have confidence
- * it is the correct slot type so we rely on session state to
- * determine the next turn in the dialog, and reprompt.
- */
-function handleNoSlotDialogRequest(intent, session, response) {
-    response.tell("I am in no slot dialog request method");
-    // get stop re-prompt
-    handleSupportedStopsRequest(intent, session, response);
-}
-
 
 /**
  * This handles the one-shot interaction, where the user utters a phrase like:
@@ -222,7 +192,7 @@ function handleOneshotBusRequest(intent, session, response) {
 function getFinalBusResponse(stopValue, response) {
     // Issue the request, and respond to the user
     makeTheBusCall(stopValue, function responseCallback(speechOutput) { 
-        response.tellWithCard(speechOutput, "TheBus", speechOutput)
+        response.tellWithCard(speechOutput, "TheBusHonolulu", speechOutput)
     });
 }
 

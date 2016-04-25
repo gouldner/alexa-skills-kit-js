@@ -10,3 +10,5 @@ OneshotBusIntent arrival time for {Stop}
 OneshotBusIntent arrival time for stop {Stop}
 OneshotBusIntent arrivals for {Stop}
 OneshotBusIntent arrivals for stop {Stop}
+OneshotBusIntent get arrivals for {Stop}
+OneshotBusIntent get arrivals for stop {Stop}
